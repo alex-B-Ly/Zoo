@@ -96,7 +96,7 @@ var zoo = {
       // TODO Make query var that returns count of animals based on type.
       var query = 'SELECT COUNT(type) FROM animals WHERE type=?';
       connection.query(query, result.animal_type, function(err, res){
-        cl(res);
+        cl(res[0]['COUNT(type)']);
       });
     });
   }
