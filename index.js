@@ -1,5 +1,8 @@
+// REQ vars
 var mysql = require('mysql');
+var prompt = require('prompt');
 
+// DB connect
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -7,10 +10,13 @@ var connection = mysql.createConnection({
     database: 'zoo_db'
 });
 
+prompt.message = '';
 
-// TEST
-connection.query('SELECT * FROM caretakers WHERE id=1', function(err, data){
-  if(err){throw err;}
+prompt.start;
 
-  console.log(data);
-});
+// ZOO OBJECT
+var zoo = {
+  welcome: function(){
+    console.log('Welcome to the Zoo And Friends App~!');
+  }
+};
