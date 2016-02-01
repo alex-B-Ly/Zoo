@@ -62,8 +62,7 @@ var zoo = {
     currentScope.view(currentScope);
   },
   view: function(input_scope){
-    // TODO Was testing scope by using zoo object.  Need to replace zoo with input_scope just below.
-    var currentScope = zoo;
+    var currentScope = input_scope;
 
     cl('Please choose what you would like to visit.');
 
@@ -78,10 +77,14 @@ var zoo = {
       }else if(result.visit === 'N'){
         currentScope.name(input_scope);
       }else if(result.visit === 'A'){
-        cl('test');
+        currentScope.all(input_scope);
+      }else if(result.visit === 'C'){
+        currentScope.care(input_scope);
+      }else{
+        cl('Sorry. Didn\'t get that.  Come again?');
+        currentScope.visit();
+        currentScope.view(currentScope);
       }
     }); 
   }
 };
-
-zoo.view();
