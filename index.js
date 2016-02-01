@@ -88,7 +88,7 @@ var zoo = {
     }); 
   },
   type: function(input_scope){
-    // var currentScope = input_scope;
+    var currentScope = input_scope;
 
     cl('Enter animal type to find how many animals we have of those type.');
 
@@ -96,11 +96,24 @@ var zoo = {
       // TODO Make query var that returns count of animals based on type.
       var query = 'SELECT COUNT(type) FROM animals WHERE type=?';
       connection.query(query, result.animal_type, function(err, res){
-        cl(res);
+        cl('We have ' + res[0]['COUNT(type)'] + ' of this animal: ' + result.animal_type +'\r\n');
+
+        // Maybe set a timeout for calls below to give user chance to see how many animals there are.
+        currentScope.menu();
+        currentScope.promptUser();
       });
     });
+  },
+  care: function(input_scope){
+    var currentScope = input_scope;
+
+    cl('Enter city name NY/SF');
+
+    // TODO Build out prompt function with query
+      // Analyze query instructions: SELECT all caretakers and animal count for each WHERE city = whatever user enters
   }
 }; // END Zoo
 
 // TEST
-zoo.type();
+
+
