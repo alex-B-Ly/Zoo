@@ -86,5 +86,21 @@ var zoo = {
         currentScope.view(currentScope);
       }
     }); 
+  },
+  type: function(input_scope){
+    // var currentScope = input_scope;
+
+    cl('Enter animal type to find how many animals we have of those type.');
+
+    prompt.get(['animal_type'], function(err, result){
+      // TODO Make query var that returns count of animals based on type.
+      var query = 'SELECT COUNT(type) FROM animals WHERE type=?';
+      connection.query(query, result.animal_type, function(err, res){
+        cl(res);
+      });
+    });
   }
-};
+}; // END Zoo
+
+// TEST
+zoo.type();
