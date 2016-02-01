@@ -32,14 +32,13 @@ var zoo = {
     cl('Enter (Q): ------> to Quit and exit the Zoo!');
   },
   add: function(input_scope){
-    // TEST - change this below back to input_scope
-    var currentScope = this;
+    var currentScope = input_scope;
     cl('To add an animal to the zoo please fill out the following form for us!');
 
-    // TEST remove caretaker id references from query and newAnimal vars
-    prompt.get(['careid', 'name', 'type', 'age'], function(err, result){
-      var query = 'INSERT INTO animals (caretaker_id, name, type, age) VALUES (?,?,?,?);';
-      var newAnimal = [result.careid, result.name, result.type, result.age];
+    // Prompts user to add new animal, then inserts it into animals table in zoo_db
+    prompt.get(['name', 'type', 'age'], function(err, result){
+      var query = 'INSERT INTO animals (name, type, age) VALUES (?,?,?);';
+      var newAnimal = [result.name, result.type, result.age];
 
       connection.query(query, newAnimal, function(err, res){
         if(err){ throw err; }
@@ -48,10 +47,20 @@ var zoo = {
       });
 
       currentScope.menu();
-      // currentScope.promptUser();
-
+      currentScope.promptUser();
     });
+  },
+  visit: function(){
+    cl('Enter (I): ------> do you know the animal by its id? We will visit that animal!');
+    cl('Enter (N): ------> do you know the animal by its name? We will visit that animal!');
+    cl('Enter (A): ------> here’s the count for all animals in all locations!');
+    cl('Enter (C): ------> here’s the count for all animals in this one city!');
+    cl('Enter (O): ------> here’s the count for all the animals in all locations by the type you specified!\r\n');
+    cl('Enter (Q): ------> Quits to the main menu!\r\n');
+
+    // TODO Analyze logic and see if currentScope.visit() and currentScope.view(currentScope) will need to be called here. Instructions unclear.
+  },
+  view: function(){
+    
   }
 };
-
-zoo.add();
