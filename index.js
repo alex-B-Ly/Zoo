@@ -88,7 +88,7 @@ var zoo = {
     }); 
   },
   type: function(input_scope){
-    // var currentScope = input_scope;
+    var currentScope = input_scope;
 
     cl('Enter animal type to find how many animals we have of those type.');
 
@@ -96,7 +96,10 @@ var zoo = {
       // TODO Make query var that returns count of animals based on type.
       var query = 'SELECT COUNT(type) FROM animals WHERE type=?';
       connection.query(query, result.animal_type, function(err, res){
-        cl(res[0]['COUNT(type)']);
+        cl('We have ' + res[0]['COUNT(type)'] + ' of this animal: ' + result.animal_type +'\r\n');
+
+        currentScope.menu();
+        currentScope.promptUser();
       });
     });
   }
@@ -104,3 +107,4 @@ var zoo = {
 
 // TEST
 zoo.type();
+
