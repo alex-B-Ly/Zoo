@@ -58,9 +58,30 @@ var zoo = {
     cl('Enter (O): ------> here’s the count for all the animals in all locations by the type you specified!\r\n');
     cl('Enter (Q): ------> Quits to the main menu!\r\n');
 
-    // TODO Analyze logic and see if currentScope.visit() and currentScope.view(currentScope) will need to be called here. Instructions unclear.
+    // View gets called, asks for user input using guide above
+    currentScope.view(currentScope);
   },
-  view: function(){
-    
+  view: function(input_scope){
+    // TODO Was testing scope by using zoo object.  Need to replace zoo with input_scope just below.
+    var currentScope = zoo;
+
+    cl('Please choose what you would like to visit.');
+
+    prompt.get(['visit'], function(err, result){
+      // This obviously points to methods based on choices defined in zoo.visit.  Why is there result.type, etc in the directions?
+      if(result.visit === 'Q'){
+        currentScope.menu();
+      }else if(result.visit === 'O'){
+        currentScope.type(input_scope);
+      }else if(result.visit === 'I'){
+        currentScope.animId(input_scope);
+      }else if(result.visit === 'N'){
+        currentScope.name(input_scope);
+      }else if(result.visit === 'A'){
+        cl('test');
+      }
+    }); 
   }
 };
+
+zoo.view();
