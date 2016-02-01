@@ -98,13 +98,22 @@ var zoo = {
       connection.query(query, result.animal_type, function(err, res){
         cl('We have ' + res[0]['COUNT(type)'] + ' of this animal: ' + result.animal_type +'\r\n');
 
+        // Maybe set a timeout for calls below to give user chance to see how many animals there are.
         currentScope.menu();
         currentScope.promptUser();
       });
     });
+  },
+  care: function(input_scope){
+    var currentScope = input_scope;
+
+    cl('Enter city name NY/SF');
+
+    // TODO Build out prompt function with query
+      // Analyze query instructions: SELECT all caretakers and animal count for each WHERE city = whatever user enters
   }
 }; // END Zoo
 
 // TEST
-zoo.type();
+
 
