@@ -93,7 +93,6 @@ var zoo = {
     cl('Enter animal type to find how many animals we have of those type.');
 
     prompt.get(['animal_type'], function(err, result){
-      // TODO Make query var that returns count of animals based on type.
       var query = 'SELECT COUNT(type) FROM animals WHERE type=?';
       connection.query(query, result.animal_type, function(err, res){
         cl('We have ' + res[0]['COUNT(type)'] + ' of this animal: ' + result.animal_type +'\r\n');
@@ -109,11 +108,35 @@ var zoo = {
 
     cl('Enter city name NY/SF');
 
-    // TODO Build out prompt function with query
-      // Analyze query instructions: SELECT all caretakers and animal count for each WHERE city = whatever user enters
+    prompt.get(['city_name'], function(err, result){
+      var query = 'SELECT COUNT(*) FROM animals a, caretakers c WHERE a.caretaker_id = c.id AND city = ?';
+      connection.query(query, result.city_name, function(err, res){
+        cl('There are ' + res[0]['COUNT(*)'] + ' animals being taken care of in ' + result.city_name + '.');
+
+        currentScope.visit();
+        currentScope.view(currentScope);
+      });
+    });
+  },
+  animId: function(input_scope){
+    var currentScope = input_scope;
+
+    cl('Enter ID of the animal you want to visit.');
+
+    prompt.get(['animal_id'], function(err, result){
+      var query = 'SELECT * FROM animals WHERE id=?';
+      connection.query(query, result.animal_id, function(err, res){
+        cl('Animal name: '+res[0].name);
+        cl('Animal type: '+res[0].type);
+        cl('Animal age: '+res[0].age+'\r\n');
+
+        currentScope.visit();
+        currentScope.view(currentScope);
+      });
+    });
   }
 }; // END Zoo
 
 // TEST
-
+zoo.animId();
 
