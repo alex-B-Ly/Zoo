@@ -151,9 +151,20 @@ var zoo = {
         currentScope.view(currentScope);
       });
     });
+  },
+  all: function(input_scope){
+    // TEST - change zoo back to input_scope on line 157 and uncomment line 163
+    var currentScope = zoo;
+
+    connection.query('SELECT COUNT(*) FROM animals', function(err, res){
+      cl('There are a total of ' + res[0]['COUNT(*)'] + ' animals in the zoo.\r\n');
+
+      currentScope.menu();
+      // currentScope.promptUser();
+    });
   }
 }; // END Zoo
 
 // TEST
-zoo.name();
+zoo.all();
 
