@@ -11,39 +11,34 @@ var connection = mysql.createConnection({
     database: 'zoo_test'
 });
 
-// Don't feel like typing console log over and over
-function cl(str){
-  console.log(str);
-}
-
 prompt.start;
 prompt.message = '';
 
 // ZOO OBJECT
 var zoo = {
   welcome: function(){
-    cl('Welcome to the Zoo And Friends App~!');
+    console.log('Welcome to the Zoo And Friends App~!');
   },
   menu: function(){
-    cl('Enter (A): ------> to Add a new animal to the Zoo!');
-    cl('Enter (U): ------> to Update info on an animal in the Zoo!');
-    cl('Enter (V): ------> to Visit the animals in the Zoo!');
-    cl('Enter (D): ------> to Adopt an animal from the Zoo!\r\n');
-    cl('Enter (Q): ------> to Quit and exit the Zoo!');
+    console.log('Enter (A): ------> to Add a new animal to the Zoo!');
+    console.log('Enter (U): ------> to Update info on an animal in the Zoo!');
+    console.log('Enter (V): ------> to Visit the animals in the Zoo!');
+    console.log('Enter (D): ------> to Adopt an animal from the Zoo!\r\n');
+    console.log('Enter (Q): ------> to Quit and exit the Zoo!');
   },
   add: function(input_scope){
     var currentScope = input_scope;
-    cl('To add an animal to the zoo please fill out the following form for us!');
+    console.log('To add an animal to the zoo please fill out the following form for us!');
 
     // Prompts user to add new animal, then inserts it into animals table in zoo_db
-    prompt.get(['name', 'type', 'age'], function(err, result){
-      var query = 'INSERT INTO animals (name, type, age) VALUES (?,?,?);';
-      var newAnimal = [result.name, result.type, result.age];
+    prompt.get(['caretaker_ID','name', 'type', 'age'], function(err, result){
+      var query = 'INSERT INTO animals (caretaker_id, name, type, age) VALUES (?,?,?,?);';
+      var newAnimal = [result.caretaker_ID, result.name, result.type, result.age];
 
       connection.query(query, newAnimal, function(err, res){
         if(err){ throw err; }
 
-        cl(result.name + ' was involuntarily thrown into the zoo for milkshake drinking visitors to ogle.');
+        console.log(result.name + ' was involuntarily thrown into the zoo for milkshake drinking visitors to ogle.');
       });
 
       currentScope.menu();
@@ -51,37 +46,35 @@ var zoo = {
     });
   },
   visit: function(){
-    cl('Enter (I): ------> do you know the animal by its id? We will visit that animal!');
-    cl('Enter (N): ------> do you know the animal by its name? We will visit that animal!');
-    cl('Enter (A): ------> here’s the count for all animals in all locations!');
-    cl('Enter (C): ------> here’s the count for all animals in this one city!');
-    cl('Enter (O): ------> here’s the count for all the animals in all locations by the type you specified!\r\n');
-    cl('Enter (Q): ------> Quits to the main menu!\r\n');
-
-    // View gets called, asks for user input using guide above
-    currentScope.view(currentScope);
+    console.log('Enter (I): ------> do you know the animal by its id? We will visit that animal!');
+    console.log('Enter (N): ------> do you know the animal by its name? We will visit that animal!');
+    console.log('Enter (A): ------> here’s the count for all animals in all locations!');
+    console.log('Enter (C): ------> here’s the count for all animals in this one city!');
+    console.log('Enter (O): ------> here’s the count for all the animals in all locations by the type you specified!\r\n');
+    console.log('Enter (Q): ------> Quits to the main menu!\r\n');
   },
   view: function(input_scope){
     var currentScope = input_scope;
 
-    cl('Please choose what you would like to visit.');
+    console.log('Please choose what you would like to visit.');
 
     prompt.get(['visit'], function(err, result){
       // This obviously points to methods based on choices defined in zoo.visit.  Why is there result.type, etc in the directions?
-      if(result.visit === 'Q'){
+      if(result.visit.toUpperCase() === 'Q'){
         currentScope.menu();
-      }else if(result.visit === 'O'){
+        currentScope.promptUser();
+      }else if(result.visit.toUpperCase() === 'O'){
         currentScope.type(input_scope);
-      }else if(result.visit === 'I'){
+      }else if(result.visit.toUpperCase() === 'I'){
         currentScope.animId(input_scope);
-      }else if(result.visit === 'N'){
+      }else if(result.visit.toUpperCase() === 'N'){
         currentScope.name(input_scope);
-      }else if(result.visit === 'A'){
+      }else if(result.visit.toUpperCase() === 'A'){
         currentScope.all(input_scope);
-      }else if(result.visit === 'C'){
+      }else if(result.visit.toUpperCase() === 'C'){
         currentScope.care(input_scope);
       }else{
-        cl('Sorry. Didn\'t get that.  Come again?');
+        console.log('Sorry. Didn\'t get that.  Come again?');
         currentScope.visit();
         currentScope.view(currentScope);
       }
@@ -90,12 +83,14 @@ var zoo = {
   type: function(input_scope){
     var currentScope = input_scope;
 
-    cl('Enter animal type to find how many animals we have of those type.');
+    console.log('Enter animal type to find how many animals we have of those type.');
 
     prompt.get(['animal_type'], function(err, result){
       var query = 'SELECT COUNT(type) FROM animals WHERE type=?';
       connection.query(query, result.animal_type, function(err, res){
-        cl('We have ' + res[0]['COUNT(type)'] + ' of this animal: ' + result.animal_type +'\r\n');
+        if(err){ throw err; }
+
+        console.log('We have ' + res[0]['COUNT(type)'] + ' of this animal: ' + result.animal_type +'\r\n');
 
         // Maybe set a timeout for calls below to give user chance to see how many animals there are.
         currentScope.menu();
@@ -106,12 +101,14 @@ var zoo = {
   care: function(input_scope){
     var currentScope = input_scope;
 
-    cl('Enter city name NY/SF');
+    console.log('Enter city name NY/SF');
 
     prompt.get(['city_name'], function(err, result){
       var query = 'SELECT COUNT(*) FROM animals a, caretakers c WHERE a.caretaker_id = c.id AND city = ?';
       connection.query(query, result.city_name, function(err, res){
-        cl('There are ' + res[0]['COUNT(*)'] + ' animals being taken care of in ' + result.city_name + '.');
+        if(err){ throw err; }
+
+        console.log('There are ' + res[0]['COUNT(*)'] + ' animals being taken care of in ' + result.city_name + '.');
 
         currentScope.visit();
         currentScope.view(currentScope);
@@ -121,14 +118,16 @@ var zoo = {
   animId: function(input_scope){
     var currentScope = input_scope;
 
-    cl('Enter ID of the animal you want to visit.');
+    console.log('Enter ID of the animal you want to visit.');
 
     prompt.get(['animal_id'], function(err, result){
       var query = 'SELECT * FROM animals WHERE id=?';
       connection.query(query, result.animal_id, function(err, res){
-        cl('Animal name: '+res[0].name);
-        cl('Animal type: '+res[0].type);
-        cl('Animal age: '+res[0].age+'\r\n');
+        if(err){ throw err; }
+
+        console.log('Animal name: '+res[0].name);
+        console.log('Animal type: '+res[0].type);
+        console.log('Animal age: '+res[0].age+'\r\n');
 
         currentScope.visit();
         currentScope.view(currentScope);
@@ -138,14 +137,17 @@ var zoo = {
   name: function(input_scope){
     var currentScope = input_scope;
 
-    cl('Enter the name of the animal you want to visit.');
+    console.log('Enter the name of the animal you want to visit.');
 
     prompt.get(['animal_name'], function(err, result){
       var query = 'SELECT * FROM animals WHERE name=?';
       connection.query(query, result.animal_name, function(err, res){
-        cl('Animal name: '+res[0].name);
-        cl('Animal type: '+res[0].type);
-        cl('Animal age: '+res[0].age+'\r\n');
+        if(err){ throw err; }
+
+        console.log('Animal ID: '+res[0].id);
+        console.log('Animal name: '+res[0].name);
+        console.log('Animal type: '+res[0].type);
+        console.log('Animal age: '+res[0].age+'\r\n');
 
         currentScope.visit();
         currentScope.view(currentScope);
@@ -156,7 +158,9 @@ var zoo = {
     var currentScope = input_scope;
 
     connection.query('SELECT COUNT(*) FROM animals', function(err, res){
-      cl('There are a total of ' + res[0]['COUNT(*)'] + ' animals in the zoo.\r\n');
+      if(err){ throw err; }
+
+      console.log('There are a total of ' + res[0]['COUNT(*)'] + ' animals in the zoo.\r\n');
 
       currentScope.menu();
       currentScope.promptUser();
@@ -168,9 +172,58 @@ var zoo = {
     prompt.get(['id', 'new_name', 'new_age', 'new_type', 'new_caretaker_id'], function(err, result){
       // TODO Figure out how to structure the query
     });
+  },
+  adopt: function(input_scope){
+    var currentScope = input_scope;
+
+    prompt.get(['animal_id'], function(err, result){
+      var query = 'DELETE FROM animals WHERE id=?';
+
+      connection.query(query, result.animal_id, function(err, res){
+        if(err){ throw err; }
+
+        console.log('You have just adopted animal #'+result.animal_id+'.');
+      });
+
+      currentScope.visit();
+      currentScope.view(currentScope);
+    });
+  },
+  promptUser: function(){
+    var self = this;
+
+    prompt.get(['input'], function(err, result){
+      switch(result.input.toUpperCase()){
+        case 'Q':
+          console.log('quitting');
+          self.exit();
+          break;
+        case 'A':
+          self.add(self);
+          break;
+        case 'V':
+          self.visit();
+          self.view(self);
+          break;
+        case 'D':
+          self.adopt(self);
+          break;
+        default:
+          console.log('Sorry, didn\'t get that. Come again?');
+      }
+    });
+  },
+  exit: function(){
+    console.log('Thank you for visiting us, goodbye!');
+    process.exit();
+  },
+  open: function(){
+    this.welcome();
+    this.menu();
+    this.promptUser();
   }
 }; // END Zoo
 
 // TEST
-
-
+  // TODO FINISH WRITING OUT THE QUERY FOR THE UPDATE METHOD!
+zoo.open();
