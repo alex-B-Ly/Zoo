@@ -95,6 +95,8 @@ var zoo = {
     prompt.get(['animal_type'], function(err, result){
       var query = 'SELECT COUNT(type) FROM animals WHERE type=?';
       connection.query(query, result.animal_type, function(err, res){
+        if(err){ throw err; }
+
         cl('We have ' + res[0]['COUNT(type)'] + ' of this animal: ' + result.animal_type +'\r\n');
 
         // Maybe set a timeout for calls below to give user chance to see how many animals there are.
@@ -111,6 +113,8 @@ var zoo = {
     prompt.get(['city_name'], function(err, result){
       var query = 'SELECT COUNT(*) FROM animals a, caretakers c WHERE a.caretaker_id = c.id AND city = ?';
       connection.query(query, result.city_name, function(err, res){
+        if(err){ throw err; }
+
         cl('There are ' + res[0]['COUNT(*)'] + ' animals being taken care of in ' + result.city_name + '.');
 
         currentScope.visit();
@@ -126,6 +130,8 @@ var zoo = {
     prompt.get(['animal_id'], function(err, result){
       var query = 'SELECT * FROM animals WHERE id=?';
       connection.query(query, result.animal_id, function(err, res){
+        if(err){ throw err; }
+
         cl('Animal name: '+res[0].name);
         cl('Animal type: '+res[0].type);
         cl('Animal age: '+res[0].age+'\r\n');
@@ -143,6 +149,8 @@ var zoo = {
     prompt.get(['animal_name'], function(err, result){
       var query = 'SELECT * FROM animals WHERE name=?';
       connection.query(query, result.animal_name, function(err, res){
+        if(err){ throw err; }
+
         cl('Animal name: '+res[0].name);
         cl('Animal type: '+res[0].type);
         cl('Animal age: '+res[0].age+'\r\n');
@@ -156,6 +164,8 @@ var zoo = {
     var currentScope = input_scope;
 
     connection.query('SELECT COUNT(*) FROM animals', function(err, res){
+      if(err){ throw err; }
+
       cl('There are a total of ' + res[0]['COUNT(*)'] + ' animals in the zoo.\r\n');
 
       currentScope.menu();
@@ -167,6 +177,22 @@ var zoo = {
 
     prompt.get(['id', 'new_name', 'new_age', 'new_type', 'new_caretaker_id'], function(err, result){
       // TODO Figure out how to structure the query
+    });
+  },
+  adopt: function(input_scope){
+    var currentScope = input_scope;
+
+    prompt.get(['animal_id'], function(err, result){
+      var query = 'DELETE FROM animals WHERE id=?';
+
+      connection.query(query, result.animal_id, function(err, res){
+        if(err){ throw err; }
+
+        cl('You have just adopted animal #'+result.animal_id+'.');
+
+        currentScope.visit();
+        currentScope.view(currentScope);
+      });
     });
   }
 }; // END Zoo
