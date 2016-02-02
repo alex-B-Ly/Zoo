@@ -134,9 +134,43 @@ var zoo = {
         currentScope.view(currentScope);
       });
     });
+  },
+  name: function(input_scope){
+    var currentScope = input_scope;
+
+    cl('Enter the name of the animal you want to visit.');
+
+    prompt.get(['animal_name'], function(err, result){
+      var query = 'SELECT * FROM animals WHERE name=?';
+      connection.query(query, result.animal_name, function(err, res){
+        cl('Animal name: '+res[0].name);
+        cl('Animal type: '+res[0].type);
+        cl('Animal age: '+res[0].age+'\r\n');
+
+        currentScope.visit();
+        currentScope.view(currentScope);
+      });
+    });
+  },
+  all: function(input_scope){
+    var currentScope = input_scope;
+
+    connection.query('SELECT COUNT(*) FROM animals', function(err, res){
+      cl('There are a total of ' + res[0]['COUNT(*)'] + ' animals in the zoo.\r\n');
+
+      currentScope.menu();
+      currentScope.promptUser();
+    });
+  },
+  update: function(input_scope){
+    var currentScope = input_scope;
+
+    prompt.get(['id', 'new_name', 'new_age', 'new_type', 'new_caretaker_id'], function(err, result){
+      // TODO Figure out how to structure the query
+    });
   }
 }; // END Zoo
 
 // TEST
-zoo.animId();
+
 
