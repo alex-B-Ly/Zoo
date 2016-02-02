@@ -3,12 +3,11 @@ var mysql = require('mysql');
 var prompt = require('prompt');
 
 // DB connect
-  // TEST - Change database back to zoo_db when done testing
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'zoo_test'
+    database: 'zoo_db'
 });
 
 prompt.start;
@@ -39,10 +38,10 @@ var zoo = {
         if(err){ throw err; }
 
         console.log(result.name + ' was involuntarily thrown into the zoo for milkshake drinking visitors to ogle.');
-      });
 
-      currentScope.menu();
-      currentScope.promptUser();
+        currentScope.menu();
+        currentScope.promptUser();
+      });
     });
   },
   visit: function(){
@@ -170,7 +169,17 @@ var zoo = {
     var currentScope = input_scope;
 
     prompt.get(['id', 'new_name', 'new_age', 'new_type', 'new_caretaker_id'], function(err, result){
-      // TODO Figure out how to structure the query
+      var query = 'UPDATE animals SET id=?, caretaker_id=?, name=?, type=?, age=? WHERE id=?';
+      var updateInfo = [result.id, result.new_caretaker_id, result.new_name, result.new_type, result.new_age, result.id];
+
+      connection.query(query, updateInfo, function(err, res){
+        if(err){ throw err }
+
+        console.log('Animal table updated.');
+      });
+
+      currentScope.menu();
+      currentScope.promptUser();
     });
   },
   adopt: function(input_scope){
@@ -208,8 +217,12 @@ var zoo = {
         case 'D':
           self.adopt(self);
           break;
+        case 'U':
+          self.update(self);
+          break;
         default:
           console.log('Sorry, didn\'t get that. Come again?');
+          break;
       }
     });
   },
@@ -225,5 +238,4 @@ var zoo = {
 }; // END Zoo
 
 // TEST
-  // TODO FINISH WRITING OUT THE QUERY FOR THE UPDATE METHOD!
 zoo.open();
