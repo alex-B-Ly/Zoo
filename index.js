@@ -194,9 +194,31 @@ var zoo = {
         currentScope.view(currentScope);
       });
     });
+  },
+  promptUser: function(){
+    var self = this;
+
+    prompt.get(['input'], function(err, result){
+      switch(result.input.toUpperCase()){
+        case 'Q':
+          cl('quitting');
+          self.exit();
+          break;
+        case 'A':
+          self.add(self);
+          break;
+        case 'V':
+          self.visit(self);
+          break;
+        case 'D':
+          self.adopt(self);
+          break;
+        default:
+          cl('Sorry, didn\'t get that. Come again?');
+      }
+    });
   }
 }; // END Zoo
 
 // TEST
-
 
