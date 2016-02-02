@@ -153,18 +153,24 @@ var zoo = {
     });
   },
   all: function(input_scope){
-    // TEST - change zoo back to input_scope on line 157 and uncomment line 163
-    var currentScope = zoo;
+    var currentScope = input_scope;
 
     connection.query('SELECT COUNT(*) FROM animals', function(err, res){
       cl('There are a total of ' + res[0]['COUNT(*)'] + ' animals in the zoo.\r\n');
 
       currentScope.menu();
-      // currentScope.promptUser();
+      currentScope.promptUser();
+    });
+  },
+  update: function(input_scope){
+    var currentScope = input_scope;
+
+    prompt.get(['id', 'new_name', 'new_age', 'new_type', 'new_caretaker_id'], function(err, result){
+      // TODO Figure out how to structure the query
     });
   }
 }; // END Zoo
 
 // TEST
-zoo.all();
+
 
